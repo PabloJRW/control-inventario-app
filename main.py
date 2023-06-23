@@ -6,8 +6,8 @@ from starlette import status
 import models
 from models import Inventario
 from pydantic import BaseModel, Field
-import opciones_validas
-
+from opciones_validas import TipoOpciones, PresentacionOpciones, CuartoOpciones
+from opciones_validas import LadoOpciones, RackOpciones, NivelOpciones, PosicionOpciones
 
 app = FastAPI()
 
@@ -26,22 +26,22 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 # Consultar todos los registros
 @app.get("/", status_code=status.HTTP_200_OK)
-async def read_all(db: db_dependency):
+async def consultar_registros(db: db_dependency):
     return db.query(Inventario).all()
 
 
 
 class InventarioRequest(BaseModel):
-    tipo:str = opciones_validas.TipoOpciones
-    presentacion:str = opciones_validas.PresentacionOpciones
+    tipo:str = Field()
+    presentacion:str = Field()
     lote:str = Field(min_length=8, max_lenght=8)
     estiba_n:str = Field()
     cantidad:int = Field(gt=0)
-    cuarto:str = opciones_validas.CuartoOpciones
-    lado:str = opciones_validas.LadoOpciones
-    rack:str = opciones_validas.RackOpciones
-    nivel:str = opciones_validas.NivelOpciones
-    posicion:str = opciones_validas.PosicionOpciones
+    cuarto:str = Field()
+    lado:str = Field()
+    rack:str = Field()
+    nivel:str = Field() 
+    posicion:str = Field()
     existente:bool
 
 # Crear registro nuevo
@@ -54,8 +54,8 @@ async def crear_registro(db:db_dependency, inv_request:InventarioRequest):
 
 
 
-@app.put("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update_todo(db:db_dependency, inv_request:InventarioRequest, inv_id: int=Path(gt=0)):
+@app.put("/registros/{inv_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def actualizar_registro(db:db_dependency, inv_request:InventarioRequest, inv_id: int=Path(gt=0)):
     inv_model = db.query(Inventario).filter(Inventario.id==inv_id).first()
     if inv_model is None:
         raise HTTPException(status_code=404, detail="Todo not found!.")
@@ -64,9 +64,21 @@ async def update_todo(db:db_dependency, inv_request:InventarioRequest, inv_id: i
     inv_model.presentacion = inv_request.presentacion
     inv_model.lote = inv_request.lote
     inv_model.estiba_n = inv_request.estiba_n
-    inv_model.estiba_n = inv_request.estiba_n
-    inv_model.estiba_n = inv_request.estiba_n
-    inv_model.estiba_n = inv_request.estiba_n
-    inv_model.estiba_n = inv_request.estiba_n
+    inv_model.cantidad = inv_request.cantidad
+    inv_model.cuarto = inv_request.cuarto
+    inv_model.lado = inv_request.lado
+    inv_model.rack = inv_request.rack
+    inv_model.nivel = inv_request.nivel
+    inv_model.posicion = inv_request.posicion
+    inv_model.existente = inv_request.existente
     db.add(inv_model)
     db.commit()
+
+
+
+@app.get("/registros/{lote}", status_code=status.HTTP_200_OK)
+async def buscar_lote(db: db_dependency, lote: int =Path(gt=0)):
+    inv_model = db.query(Inventario).filter(Inventario.lote==lote).all()
+    if inv_model is not None:
+        return inv_model
+    raise HTTPException(status_code=404, datail="ToDo not found.")
