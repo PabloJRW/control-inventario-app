@@ -1,17 +1,15 @@
 from fastapi import FastAPI, Depends, HTTPException, Path
-from database import SessionLocal, engine
+from config.database import SessionLocal, engine
 from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
 import models
-from models import Inventario
+from models.inventario import Inventario
 from pydantic import BaseModel, Field
-from opciones_validas import TipoOpciones, PresentacionOpciones, CuartoOpciones
-from opciones_validas import LadoOpciones, RackOpciones, NivelOpciones, PosicionOpciones
 
 app = FastAPI()
 
-models.Base.metadata.create_all(bind=engine)
+models.inventario.Base.metadata.create_all(bind=engine)
 
 
 def get_db():
@@ -46,6 +44,7 @@ class InventarioRequest(BaseModel):
     estado: str = Field()
     detalles: str = Field()
 
+
 # Crear registro nuevo
 @app.post("/registros/nuevo_registro", status_code=status.HTTP_201_CREATED)
 async def crear_registro(db:db_dependency, inv_request:InventarioRequest):
@@ -77,9 +76,8 @@ async def actualizar_registro(db:db_dependency, inv_request:InventarioRequest, i
     db.commit()
 
 
-
 @app.get("/registros/{lote}", status_code=status.HTTP_200_OK)
-async def buscar_lote(db: db_dependency, lote: int =Path(gt=0)):
+async def buscar_lote(db: db_dependency, lote: int = Path(gt=0)):
     inv_model = db.query(Inventario).filter(Inventario.lote==lote).all()
     if inv_model is not None:
         return inv_model
