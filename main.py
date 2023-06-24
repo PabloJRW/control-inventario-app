@@ -13,6 +13,7 @@ app = FastAPI()
 
 models.Base.metadata.create_all(bind=engine)
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -30,19 +31,20 @@ async def consultar_registros(db: db_dependency):
     return db.query(Inventario).all()
 
 
-
 class InventarioRequest(BaseModel):
-    tipo:str = Field()
-    presentacion:str = Field()
-    lote:str = Field(min_length=8, max_lenght=8)
-    estiba_n:str = Field()
-    cantidad:int = Field(gt=0)
-    cuarto:str = Field()
-    lado:str = Field()
-    rack:str = Field()
-    nivel:str = Field() 
-    posicion:str = Field()
-    existente:bool
+    tipo: str = Field()
+    presentacion: str = Field()
+    lote: str = Field(min_length=8, max_lenght=8)
+    estiba_n: str = Field()
+    cantidad: int = Field(gt=0)
+    cuarto: str = Field()
+    lado: str = Field()
+    rack: str = Field()
+    nivel: str = Field()
+    posicion: str = Field()
+    existente: bool
+    estado: str = Field()
+    detalles: str = Field()
 
 # Crear registro nuevo
 @app.post("/registros/nuevo_registro", status_code=status.HTTP_201_CREATED)

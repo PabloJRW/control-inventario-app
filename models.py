@@ -1,14 +1,27 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+
+
+class Usuarios(Base):
+    __tablename__ = 'usuarios'
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario = Column(String, unique=True, nullable=False)
+    nombre = Column(String)
+    apellido = Column(String)
+    correo = Column(String)
+    password = Column(String, nullable=False)
+    role = Column(String)
+    activo = Column(Boolean, default=False)
 
 
 class Inventario(Base):
-    __tablename__='inventario'
+    __tablename__: str = 'inventario'
 
     id = Column(Integer, primary_key=True, index=True)
     tipo = Column(String)
     presentacion = Column(String)
-    lote = Column(String)
+    lote = Column(String, nullable=False)
     estiba_n = Column(String)
     cantidad = Column(Integer)
     cuarto = Column(String)
@@ -17,3 +30,6 @@ class Inventario(Base):
     nivel = Column(String)
     posicion = Column(String)
     existente = Column(Boolean, default=True)
+    estado = Column(String(9))
+    detalles = Column(String(150))
+    usuario_id = Column(ForeignKey('usuarios.id'))
