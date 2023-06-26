@@ -1,15 +1,15 @@
 from fastapi import FastAPI, Depends, HTTPException, Path
-from config.database import SessionLocal, engine
-from typing import Annotated
+from database import SessionLocal, engine
+from typing import Annotated, Optional
 from sqlalchemy.orm import Session
 from starlette import status
 import models
-from models.inventario import Inventario
+from models import Inventario
 from pydantic import BaseModel, Field
 
 app = FastAPI()
 
-models.inventario.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 
 def get_db():
@@ -24,9 +24,9 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 # Consultar todos los registros
-@app.get("/", status_code=status.HTTP_200_OK)
+@app.get("/consultar_registros", status_code=status.HTTP_200_OK)
 async def consultar_registros(db: db_dependency):
-    return db.query(Inventario).all()
+    return db.query(Inventario).order_by(Inventario.id.desc()).all()
 
 
 class InventarioRequest(BaseModel):
@@ -42,22 +42,20 @@ class InventarioRequest(BaseModel):
     posicion: str = Field()
     existente: bool
     estado: str = Field()
-    detalles: str = Field()
+    detalles: Optional[str] = Field()
 
 
 # Crear registro nuevo
 @app.post("/registros/nuevo_registro", status_code=status.HTTP_201_CREATED)
-async def crear_registro(db:db_dependency, inv_request:InventarioRequest):
+async def crear_registro(db: db_dependency, inv_request: InventarioRequest):
     inv_model = Inventario(**inv_request.dict())
     db.add(inv_model)
     db.commit()
 
 
-
-
 @app.put("/registros/{inv_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def actualizar_registro(db:db_dependency, inv_request:InventarioRequest, inv_id: int=Path(gt=0)):
-    inv_model = db.query(Inventario).filter(Inventario.id==inv_id).first()
+async def actualizar_registro(db: db_dependency, inv_request: InventarioRequest, inv_id: int = Path(gt=0)):
+    inv_model = db.query(Inventario).filter(Inventario.id == inv_id).first()
     if inv_model is None:
         raise HTTPException(status_code=404, detail="Todo not found!.")
     
@@ -78,7 +76,19 @@ async def actualizar_registro(db:db_dependency, inv_request:InventarioRequest, i
 
 @app.get("/registros/{lote}", status_code=status.HTTP_200_OK)
 async def buscar_lote(db: db_dependency, lote: int = Path(gt=0)):
-    inv_model = db.query(Inventario).filter(Inventario.lote==lote).all()
+    inv_model = db.query(Inventario).filter(Inventario.lote == lote).all()
     if inv_model is not None:
         return inv_model
-    raise HTTPException(status_code=404, datail="ToDo not found.")
+    raise HTTPException(status_code=404)
+
+
+@app.delete("/delete/{id_registro}", status_code=status.HTTP_204_NO_CONTENT)
+async def eliminar_registro(db: db_dependency, id_registro: int = Path(gt=0)):
+    model = db.query(Inventario).filter(Inventario.id == id_registro).first()
+    if model is None:
+        raise HTTPException(status_code=404, detail="Todo not found!.")
+
+    db.query(Inventario).filter(Inventario.id == id_registro).delete()
+    db.commit()
+
+
