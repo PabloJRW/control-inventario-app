@@ -1,6 +1,5 @@
 from database import Base
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from typing import Optional
 
 
 class Usuarios(Base):
@@ -11,7 +10,7 @@ class Usuarios(Base):
     apellido = Column(String)
     usuario = Column(String, unique=True, nullable=False)
     correo = Column(String)
-    password = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=False)
     role = Column(String)
     activo = Column(Boolean, default=False)
 
