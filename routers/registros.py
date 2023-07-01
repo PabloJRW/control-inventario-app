@@ -1,13 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path, Request
 from database import SessionLocal
 from typing import Annotated, Optional
 from sqlalchemy.orm import Session
 from starlette import status
 from models import Inventario
 from pydantic import BaseModel, Field
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 
-router = APIRouter()
+router = APIRouter(prefix="/registro", tags=['registro'])
+
+templates = Jinja2Templates(directory='templates')
 
 
 def get_db():
@@ -21,8 +25,18 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
+@router.get("/home")
+async def home(request:Request):
+    return templates.TemplateResponse("home.html", {'request': request})
+
+
+@router.get("/test")
+async def test(request:Request):
+    return templates.TemplateResponse("nuevo_registro.html", {'request': request})
+
+
 # Consultar todos los registros
-@router.get("/consultar_registros", status_code=status.HTTP_200_OK)
+@router.get("/", status_code=status.HTTP_200_OK)
 async def consultar_registros(db: db_dependency):
     return db.query(Inventario).order_by(Inventario.id.desc()).all()
 
