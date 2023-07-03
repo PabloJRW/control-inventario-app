@@ -12,78 +12,78 @@
 
 </head>
 <body>
-    <h1 class="text-center mt-3 text-secondary">GESTOR DE ALMACENAMIENTO</h1>
-    <nav class="navbar navbar-dark mt-5 mb-1 ps-5 border border-bottom-4 ">
-        <div class="mt-1 mb-1">
-            <a class="btn btn-secondary btn-sm ms-5">INGRESAR</a>
-            <a class="btn btn-secondary btn-sm ms-3">INGRESAR</a>
-        </div>
-    </nav>
-    <div class="container mt-3">
-        <div class="card shadow">
-            <div class="card-header text-center">
-                <h5 class="card-text">Nuevo Registro</h5>
+    <div>
+        <h1 class="text-center mt-3 text-secondary">GESTOR DE ALMACENAMIENTO</h1>
+        <nav class="navbar navbar-light" style="background-color:#E5E7E9">
+            <div class="mt-1 mb-1">
+                <a class="btn btn-light btn-md ms-5">Registros</a>
+                <a class="btn btn-light disabled btn-md ms-3">Nuevo Registro</a>
             </div>
-            <div class="card-body">
+        </nav>
+        <div class="container mt-5">
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <h5 class="card-text">Nuevo Registro</h5>
+                </div>
+                <div class="card-body" style="background:#E5E7E9">
 
-                <form action="/ingresar" method='POST'>
-                    <div class="row mb-3 shadow">
-                        <!-- Tipo de queso -->
-                        <div class="col">
-                            <label>Tipo</label>
-                            <input type="text" class="form-control" name="quesoTipo">
-                        </div>
-                        <!-- Presentación -->
-                        <div class="col">
-                            <label>Presentación</label>
-                            <input type="text" class="form-control" name="quesoPresentacion">
-                        </div>
-                    </div>
-                    <div class="row mb-3 shadow">
-                        <!-- Lote de la estiba -->
-                        <div class="col">
-                            <label>Lote</label>
-                            <input type="text" class="form-control" name="estibaLote">
-                        </div>
-                        <!-- Número de la estiba de un mismo lote-->
-                        <div class="col">
-                            <label># Estiba</label>
-                            <input type="text" class="form-control" name="estibaNumero">
-                        </div>
-                        <!--cantidad de cajas en la estiba -->
-                        <div class="col">
-                            <label>Cantidad</label>
-                            <input type="text" class="form-control" name="estibaCantidad">
-                        </div>
-                    </div>
-                    <div class="row mb-3 shadow">
-                        <div class="col">
-                            <label>Cuarto</label>
-                            <input type="text" class="form-control" name="cuartoNumero">
-                        </div>
-                        <div class="col">
-                            <label>Lado</label>
-                            <input type="text" class="form-control" name="cuartoLado">
-                        </div>
-                        <div class="col">
-                            <label>Rack</label>
-                            <input type="text" class="form-control" name="cuartoRack">
-                        </div>
-                        <div class="col">
-                            <label>Nivel</label>
-                            <input type="text" class="form-control" name="cuartoNivel">
-                        </div>
-                        <div class="col">
-                            <label>Posición</label>
-                            <input type="text" class="form-control" name="cuartoPosicion">
-                        </div>
-                    </div>
-                    <!-- Example single danger button -->
+                    <form action="/ingresar" method='POST'>
+                        <div class="row mb-3">
+                            <!-- Tipo de queso -->
+                            <div class="input-group">
+                                <span class="input-group-text">Tipo:</span>
+                                <input type="text" class="form-control" name="quesoTipo">
 
-                    </div>
-                </form>
+                                <span class="input-group-text ms-3">Presentación:</span>
+                                <input type="text" class="form-control" name="quesoPresentacion">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <!-- Lote de la estiba -->
+                            <div class="input-group">
+                                <span class="input-group-text">Lote:</span>
+                                <input type="text" class="form-control" name="estibaLote">
+
+                                <span class="input-group-text ms-3"># Estiba:</span>
+                                <input type="text" class="form-control" name="estibaNumero">
+
+                                <span class="input-group-text ms-3">Cantidad:</span>
+                                <input type="text" class="form-control" name="estibaCantidad">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Cuarto:</span>
+                                <input type="text" class="form-control" name="cuartoNumero">
+
+                                <span class="input-group-text ms-3">Lado:</span>
+                                <input type="text" class="form-control" name="cuartoLado">
+
+                                <span class="input-group-text ms-3">Rack:</span>
+                                <input type="text" class="form-control" name="cuartoRack">
+
+                                <span class="input-group-text ms-3">Nivel:</span>
+                                <input type="text" class="form-control" name="cuartoNivel">
+
+                                <span class="input-group-text ms-3">Posición:</span>
+                                <input type="text" class="form-control" name="cuartoPosicion">
+                            </div>
+
+                            <div class="col">
+                                <span>Comentarios:</span>
+                                <input type="text" class="form-control input-lg mb-3" >
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
             </div>
-        <button class="btn btn-secondary mb-3 mt-4 center">Registrar</button>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-outline-dark btn-md mb-3 mt-3 me-1">Cancelar</button>
+                <button class="btn btn-outline-dark btn-md mb-3 mt-3 ms-1">Registrar</button>
+            </div>
+
         </div>
     </div>
 </body>
