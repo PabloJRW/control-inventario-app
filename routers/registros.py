@@ -24,7 +24,7 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-
+# Modified
 @router.get("/home")
 async def home(request:Request):
     return templates.TemplateResponse("home.html", {'request': request})
