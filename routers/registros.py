@@ -1,15 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, Request
+from fastapi import APIRouter, Depends, HTTPException, Path, Request, Form
 from database import SessionLocal
 from typing import Annotated, Optional
 from sqlalchemy.orm import Session
 from starlette import status
+from starlette.responses import RedirectResponse
 from models import Inventario
 from pydantic import BaseModel, Field
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 
-router = APIRouter(prefix="/registro", tags=['registro'])
+router = APIRouter(prefix="/registros", tags=['registros'])
 
 templates = Jinja2Templates(directory='templates')
 
@@ -24,21 +25,12 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-# Modified
-@router.get("/home")
-async def home(request:Request):
-    return templates.TemplateResponse("home.html", {'request': request})
-
-
-@router.get("/test")
-async def test(request:Request):
-    return templates.TemplateResponse("nuevo_registro.html", {'request': request})
-
 
 # Consultar todos los registros
-@router.get("/", status_code=status.HTTP_200_OK)
-async def consultar_registros(db: db_dependency):
-    return db.query(Inventario).order_by(Inventario.id.desc()).all()
+@router.get("/", response_class=HTMLResponse)
+async def consultar_registros(request: Request, db: Session = Depends(get_db)):
+    registros = db.query(Inventario).order_by(Inventario.id.desc()).all()
+    return templates.TemplateResponse("home.html", {'request': request, 'registros': registros})
 
 
 class InventarioRequest(BaseModel):
@@ -58,32 +50,42 @@ class InventarioRequest(BaseModel):
 
 
 # Crear registro nuevo
-@router.post("/registros/nuevo_registro", status_code=status.HTTP_201_CREATED)
-async def crear_registro(db: db_dependency, inv_request: InventarioRequest):
-    inv_model = Inventario(**inv_request.dict())
-    db.add(inv_model)
+@router.get("/crear-registro", response_class=HTMLResponse)
+async def crear_registro(request: Request):
+    return templates.TemplateResponse("crear-registro.html", {'request': request})
+
+
+@router.post("/crear-registro", response_class=HTMLResponse)
+async def nuevo_registro(request: Request, tipo: str = Form(...), presentacion: str = Form(...),
+                          lote: str = Form(...), estiba_n: str = Form(...), cantidad: int = Form(...),
+                          cuarto: str = Form(...), lado: str = Form(...), rack: str = Form(...),
+                          nivel: str = Form(...), posicion: str = Form(...),
+                          detalles: str = Form(...),
+                          db: Session = Depends(get_db)):
+
+    nuevo_registro = Inventario()
+    nuevo_registro.tipo = tipo
+    nuevo_registro.presentacion = presentacion
+    nuevo_registro.lote = lote
+    nuevo_registro.estiba_n = estiba_n
+    nuevo_registro.cantidad = cantidad
+    nuevo_registro.cuarto = cuarto
+    nuevo_registro.lado = lado
+    nuevo_registro.rack = rack
+    nuevo_registro.nivel = nivel
+    nuevo_registro.posicion = posicion
+    nuevo_registro.existente = True
+    nuevo_registro.detalles = detalles
+
+    db.add(nuevo_registro)
     db.commit()
 
+    return RedirectResponse(url="/registros", status_code=status.HTTP_302_FOUND)
 
-@router.put("/registros/{inv_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def actualizar_registro(db: db_dependency, inv_request: InventarioRequest, inv_id: int = Path(gt=0)):
-    inv_model = db.query(Inventario).filter(Inventario.id == inv_id).first()
-    if inv_model is None:
-        raise HTTPException(status_code=404, detail="Todo not found!.")
 
-    inv_model.tipo = inv_request.tipo
-    inv_model.presentacion = inv_request.presentacion
-    inv_model.lote = inv_request.lote
-    inv_model.estiba_n = inv_request.estiba_n
-    inv_model.cantidad = inv_request.cantidad
-    inv_model.cuarto = inv_request.cuarto
-    inv_model.lado = inv_request.lado
-    inv_model.rack = inv_request.rack
-    inv_model.nivel = inv_request.nivel
-    inv_model.posicion = inv_request.posicion
-    inv_model.existente = inv_request.existente
-    db.add(inv_model)
-    db.commit()
+@router.get("/editar-registro", response_class=HTMLResponse)
+async def editar_registro(request: Request):
+    return templates.TemplateResponse("editar-registro.html", {'request': request})
 
 
 @router.get("/registros/{lote}", status_code=status.HTTP_200_OK)

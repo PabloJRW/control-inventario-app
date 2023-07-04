@@ -55,57 +55,25 @@
                 </thead>
 
                 <tbody>
+                    {% for registro in registros %}
                     <tr class="pointer">
-                        <td>1</td>
-                        <td>Americano</td>
-                        <td>50 Rebanadas</td>
-                        <td>L30300219</td>
-                        <td>1</td>
-                        <td>100</td>
-                        <td>1</td>
-                        <td>A</td>
-                        <td>3</td>
-                        <td>3</td>
-                        <td>5</td>
+                        <td>{{ loop.index }}</td>
+                        <td>{{registro.tipo}}</td>
+                        <td>{{registro.presentacion}}</td>
+                        <td>{{registro.lote}}</td>
+                        <td>{{registro.estiba_n}}</td>
+                        <td>{{registro.cantidad}}</td>
+                        <td>{{registro.cuarto}}</td>
+                        <td>{{registro.lado}}</td>
+                        <td>{{registro.rack}}</td>
+                        <td>{{registro.nivel}}</td>
+                        <td>{{registro.posicion}}</td>
                         <td>
                             <button type="button" class="btn btn-success">Complete</button>
-                            <button type="button" class="btn btn-danger">Delete</button>
+                            <button onclick="window.location.href='editar-registro/{{registro_id}}'" type="button" class="btn btn-info">Editar</button>
                         </td>
                     </tr>
-                    <tr class="pointer">
-                        <td>2</td>
-                        <td>Mozzarella</td>
-                        <td>25 Rebanadas</td>
-                        <td>L30590219</td>
-                        <td>1</td>
-                        <td>100</td>
-                        <td>2</td>
-                        <td>A</td>
-                        <td>5</td>
-                        <td>2</td>
-                        <td>7</td>
-                        <td>
-                            <button type="button" class="btn btn-success">Complete</button>
-                            <button type="button" class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                <tr class="pointer">
-                        <td>3</td>
-                        <td>Mozzarella</td>
-                        <td>2 kg.</td>
-                        <td>L31490219</td>
-                        <td>1</td>
-                        <td>400</td>
-                        <td>1</td>
-                        <td>b</td>
-                        <td>6</td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>
-                            <button type="button" class="btn btn-success">Complete</button>
-                            <button type="button" class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
+                    {% endfor %}
 
                 </tbody>
 
