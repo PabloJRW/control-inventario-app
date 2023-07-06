@@ -83,11 +83,15 @@ async def nuevo_registro(request: Request, tipo: str = Form(...), presentacion: 
     return RedirectResponse(url="/registros", status_code=status.HTTP_302_FOUND)
 
 
-@router.get("/editar-registro", response_class=HTMLResponse)
-async def editar_registro(request: Request):
-    return templates.TemplateResponse("editar-registro.html", {'request': request})
+
+# Endpoint para edición de registros
+@router.get("/editar-registro/{registro_id}", response_class=HTMLResponse)
+async def editar_registro(request: Request, registro_id: int, db: Session = Depends(get_db)):
+    reg = db.query(Inventario).filter(Inventario.id == registro_id).first()
+    return templates.TemplateResponse("editar-registro.html", {'request': request, 'reg': reg})
 
 
+# Endpoint para hacer búsqueda por lote
 @router.get("/registros/{lote}", status_code=status.HTTP_200_OK)
 async def buscar_lote(db: db_dependency, lote: int = Path(gt=0)):
     inv_model = db.query(Inventario).filter(Inventario.lote == lote).all()

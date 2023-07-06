@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Registros - Home</title>
+    <title>HOME - Registros</title>
 
 </head>
 <body>
@@ -18,8 +18,8 @@
     <h1 class="text-center mt-3 text-secondary">GESTOR DE ALMACENAMIENTO</h1>
     <nav class="navbar navbar-light" style="background-color:#E5E7E9">
         <div class="d-flex mt-1 mb-1">
-            <a class="btn btn-light disabled btn-md ms-5">Registros</a>
-            <a class="btn btn-light btn-md ms-3">Nuevo Registro</a>
+            <a onclick="window.location.href='registros'" class="btn btn-light disabled btn-md ms-5">Registros</a>
+            <a onclick="window.location.href='crear-registro'" class="btn btn-light btn-md ms-3">Agregar Registro</a>
         </div>
         <div>
             <form class="d-flex me-5">
@@ -41,6 +41,7 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">id</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">Presentación</th>
                         <th scope="col">Lote</th>
@@ -58,19 +59,20 @@
                     {% for registro in registros %}
                     <tr class="pointer">
                         <td>{{ loop.index }}</td>
-                        <td>{{registro.tipo}}</td>
-                        <td>{{registro.presentacion}}</td>
-                        <td>{{registro.lote}}</td>
-                        <td>{{registro.estiba_n}}</td>
-                        <td>{{registro.cantidad}}</td>
-                        <td>{{registro.cuarto}}</td>
-                        <td>{{registro.lado}}</td>
-                        <td>{{registro.rack}}</td>
-                        <td>{{registro.nivel}}</td>
-                        <td>{{registro.posicion}}</td>
+                        <td>{{ registro.id }}</td>
+                        <td>{{ registro.tipo }}</td>
+                        <td>{{ registro.presentacion }}</td>
+                        <td>{{ registro.lote }}</td>
+                        <td>{{ registro.estiba_n }}</td>
+                        <td>{{ registro.cantidad }}</td>
+                        <td>{{ registro.cuarto }}</td>
+                        <td>{{ registro.lado }}</td>
+                        <td>{{ registro.rack }}</td>
+                        <td>{{ registro.nivel }}</td>
+                        <td>{{ registro.posicion }}</td>
                         <td>
                             <button type="button" class="btn btn-success">Complete</button>
-                            <button onclick="window.location.href='editar-registro/{{registro_id}}'" type="button" class="btn btn-info">Editar</button>
+                            <button onclick="window.location.href='editar-registro/{{ registro.id }}'" type="button" class="btn btn-info">Editar</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -78,8 +80,6 @@
                 </tbody>
 
             </table>
-
-            <a class="btn btn-secondary" href="#">Nuevo Registro</a>
 
         </div>
     </div>

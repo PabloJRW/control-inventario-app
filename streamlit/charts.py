@@ -24,4 +24,3 @@ with col2:
     st.bar_chart(cantidad_por_tipo)
 
 st.line_chart(np.random.randn(30, 2))
-
