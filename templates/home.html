@@ -14,34 +14,33 @@
 </head>
 <body>
 
-<div>
-    <h1 class="text-center mt-3 text-secondary">GESTOR DE ALMACENAMIENTO</h1>
-    <nav class="navbar navbar-light" style="background-color:#E5E7E9">
-        <div class="d-flex mt-1 mb-1">
-            <a onclick="window.location.href='registros'" class="btn btn-light disabled btn-md ms-5">Registros</a>
-            <a onclick="window.location.href='crear-registro'" class="btn btn-light btn-md ms-3">Agregar Registro</a>
-        </div>
-        <div>
-            <form class="d-flex me-5">
-                <input class="form-control me-2" type="search" placeholder="Buscar Lote" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Buscar</button>
-            </form>
-        </div>
-    </nav>
-</div>
+    <!-- Header & Nav -->
+    <div>
+        <h1 class="text-center mt-3 text-secondary">GESTOR DE ALMACENAMIENTO</h1>
+        <nav class="navbar navbar-light" style="background-color:#E5E7E9">
+            <div class="d-flex mt-1 mb-1">
+                <a onclick="window.location.href='registros'" class="btn btn-light disabled btn-md ms-5">Registros</a>
+                <a onclick="window.location.href='crear-registro'" class="btn btn-light btn-md ms-3">Agregar Registro</a>
+            </div>
+            <div>
+                <form class="d-flex me-5">
+                    <input class="form-control me-2" type="search" placeholder="Buscar Lote" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
+            </div>
+        </nav>
+    </div>
 
-<div class="container mt-3">
-    <div class="card text-center">
-        <div class="card-header">
-            Registros
-        </div>
+        <!-- Tabla -->
+    <div class="container mt-3">
+        <div class="card text-center">
+        <div class="card-header card-title"> Registros </div>
+
         <div class="card-body">
-
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-striped">
+                <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">id</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">Presentación</th>
                         <th scope="col">Lote</th>
@@ -57,9 +56,8 @@
 
                 <tbody>
                     {% for registro in registros %}
-                    <tr class="pointer">
+                    <tr>
                         <td>{{ loop.index }}</td>
-                        <td>{{ registro.id }}</td>
                         <td>{{ registro.tipo }}</td>
                         <td>{{ registro.presentacion }}</td>
                         <td>{{ registro.lote }}</td>
@@ -71,7 +69,9 @@
                         <td>{{ registro.nivel }}</td>
                         <td>{{ registro.posicion }}</td>
                         <td>
-                            <button type="button" class="btn btn-success">Complete</button>
+                            <button onclick="window.location.href='/complete/{registro_id}'" type="button" class="btn btn-success">Complete</button>
+                        </td>
+                        <td>
                             <button onclick="window.location.href='editar-registro/{{ registro.id }}'" type="button" class="btn btn-info">Editar</button>
                         </td>
                     </tr>
@@ -85,8 +85,6 @@
     </div>
 
 </div>
-
-
 
 </body>
 </html>

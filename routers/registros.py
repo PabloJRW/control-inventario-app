@@ -80,7 +80,7 @@ async def nuevo_registro(request: Request, tipo: str = Form(...), presentacion: 
     db.add(nuevo_registro)
     db.commit()
 
-    return RedirectResponse(url="/registros", status_code=status.HTTP_302_FOUND)
+
 
 
 
@@ -91,22 +91,57 @@ async def editar_registro(request: Request, registro_id: int, db: Session = Depe
     return templates.TemplateResponse("editar-registro.html", {'request': request, 'reg': reg})
 
 
-# Endpoint para hacer búsqueda por lote
-@router.get("/registros/{lote}", status_code=status.HTTP_200_OK)
-async def buscar_lote(db: db_dependency, lote: int = Path(gt=0)):
-    inv_model = db.query(Inventario).filter(Inventario.lote == lote).all()
-    if inv_model is not None:
-        return inv_model
-    raise HTTPException(status_code=404)
+@router.post("/editar-registro/{registro_id}", response_class=HTMLResponse)
+async def editar_registro(request: Request, registro_id: int, tipo: str = Form(...), presentacion: str = Form(...),
+                          lote: str = Form(...), estiba_n: str = Form(...), cantidad: int = Form(...),
+                          cuarto: str = Form(...), lado: str = Form(...), rack: str = Form(...),
+                          nivel: str = Form(...), posicion: str = Form(...),
+                          detalles: Optional[str] = Form(None),
+                          db: Session = Depends(get_db)):
 
+    registro_editado = db.query(Inventario).filter(Inventario.id == registro_id).first()
 
-@router.delete("/delete/{id_registro}", status_code=status.HTTP_204_NO_CONTENT)
-async def eliminar_registro(db: db_dependency, id_registro: int = Path(gt=0)):
-    model = db.query(Inventario).filter(Inventario.id == id_registro).first()
-    if model is None:
-        raise HTTPException(status_code=404, detail="Todo not found!.")
+    registro_editado.tipo = tipo
+    registro_editado.presentacion = presentacion
+    registro_editado.lote = lote
+    registro_editado.estiba_n = estiba_n
+    registro_editado.cantidad = cantidad
+    registro_editado.cuarto = cuarto
+    registro_editado.lado = lado
+    registro_editado.rack = rack
+    registro_editado.nivel = nivel
+    registro_editado.posicion = posicion
+    registro_editado.existente = True
+    registro_editado.detalles = detalles
 
-    db.query(Inventario).filter(Inventario.id == id_registro).delete()
+    db.add(registro_editado)
     db.commit()
+
+    return RedirectResponse(url="/registros", status_code=status.HTTP_302_FOUND)
+
+
+
+@router.post("/complete/{registro_id", response_class=HTMLResponse)
+async def complete(request: Request, registro_id: int, db: Session = Depends(get_db)):
+    registro = db.query(Inventario).filter(Inventario.id == registro_id).first()
+    registro.existente = False
+    db.add(registro)
+    db.commit()
+
+
+@router.delete("/eliminar-registro/{registro_id}", response_class=HTMLResponse)
+async def eliminar_registro(request: Request, registro_id: int, db: Session = Depends(get_db)):
+    registro = db.query(Inventario).filter(Inventario.id == registro_id).first()
+    if not registro:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Registro no encontrado")
+
+    db.delete(registro)
+    db.commit()
+
+    return RedirectResponse(url="/registros", status_code=status.HTTP_302_FOUND)
+
+
+
+
 
 

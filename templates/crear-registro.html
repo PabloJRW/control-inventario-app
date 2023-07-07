@@ -16,7 +16,7 @@
         <h1 class="text-center mt-3 text-secondary">GESTOR DE ALMACENAMIENTO</h1>
         <nav class="navbar navbar-light" style="background-color:#E5E7E9">
             <div class="mt-1 mb-1">
-                <a onclick="window.location.href='registros/'" class="btn btn-light btn-md ms-5">Registros</a>
+                <a onclick="window.location.href='/registros'" class="btn btn-light btn-md ms-5">Registros</a>
                 <a class="btn btn-light disabled btn-md ms-3">Nuevo Registro</a>
             </div>
         </nav>
@@ -62,6 +62,7 @@
                                 <input type="text" class="form-control" name="cantidad">
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Cuarto:</span>
@@ -78,8 +79,12 @@
                                     <option>A</option>
                                     <option>B</option>
                                 </select>
+                            </div>
+                        </div>
 
-                                <span class="input-group-text ms-3">Rack:</span>
+                        <div class="row">
+                            <div class="input-group">
+                                <span class="input-group-text">Rack:</span>
                                 <select type="text" class="form-select" name="rack">
                                     <option selected disabled>Seleccione...</option>
                                     <option>1</option>
@@ -111,7 +116,7 @@
                                 </select>
                             </div>
 
-                            <div class="col">
+                            <div class="mt-3">
                                 <span>Comentarios:</span>
                                 <textarea type="text" class="form-control input-lg mb-3" name="detalles"></textarea>
                             </div>
