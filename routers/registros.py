@@ -10,20 +10,19 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 
+# Creación de una instancia del enrutador
 router = APIRouter(prefix="/registros", tags=['registros'])
 
+# Directorio de plantillaspara Jinja2
 templates = Jinja2Templates(directory='templates')
 
-
+# Sesión para obtener una sesión de base de datos
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-
-
-db_dependency = Annotated[Session, Depends(get_db)]
 
 
 # Consultar todos los registros
@@ -33,20 +32,11 @@ async def consultar_registros(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse("home.html", {'request': request, 'registros': registros})
 
 
-class InventarioRequest(BaseModel):
-    tipo: str = Field()
-    presentacion: str = Field()
-    lote: str = Field(min_length=8, max_lenght=8)
-    estiba_n: str = Field()
-    cantidad: int = Field(gt=0)
-    cuarto: str = Field()
-    lado: str = Field()
-    rack: str = Field()
-    nivel: str = Field()
-    posicion: str = Field()
-    existente: bool
-    estado: str = Field()
-    detalles: Optional[str] = Field()
+# Buscar por lote
+@router.get("/buscar-lote/{lote}", response_class=HTMLResponse)
+async def buscar_lote(request: Request, lote: str, db: Session = Depends(get_db)):
+    batch_response = db.query(Inventario).filter(Inventario.lote == lote).first()
+    return templates.TemplateResponse("buscar-lote.html", {'request': request, 'batch_data': batch_response})
 
 
 # Crear registro nuevo
@@ -56,12 +46,10 @@ async def crear_registro(request: Request):
 
 
 @router.post("/crear-registro", response_class=HTMLResponse)
-async def nuevo_registro(request: Request, tipo: str = Form(...), presentacion: str = Form(...),
-                          lote: str = Form(...), estiba_n: str = Form(...), cantidad: int = Form(...),
-                          cuarto: str = Form(...), lado: str = Form(...), rack: str = Form(...),
-                          nivel: str = Form(...), posicion: str = Form(...),
-                          detalles: str = Form(...),
-                          db: Session = Depends(get_db)):
+async def nuevo_registro(request: Request, tipo: str = Form(...), presentacion: str = Form(...), lote: str = Form(...),
+                         estiba_n: str = Form(...), cantidad: int = Form(...), cuarto: str = Form(...),
+                         lado: str = Form(...), rack: str = Form(...), nivel: str = Form(...), posicion: str = Form(...),
+                         detalles: str = Form(...), db: Session = Depends(get_db)):
 
     nuevo_registro = Inventario()
     nuevo_registro.tipo = tipo
@@ -80,9 +68,7 @@ async def nuevo_registro(request: Request, tipo: str = Form(...), presentacion: 
     db.add(nuevo_registro)
     db.commit()
 
-
-
-
+    RedirectResponse("/registros")
 
 # Endpoint para edición de registros
 @router.get("/editar-registro/{registro_id}", response_class=HTMLResponse)
@@ -91,12 +77,12 @@ async def editar_registro(request: Request, registro_id: int, db: Session = Depe
     return templates.TemplateResponse("editar-registro.html", {'request': request, 'reg': reg})
 
 
+# Editar registro
 @router.post("/editar-registro/{registro_id}", response_class=HTMLResponse)
 async def editar_registro(request: Request, registro_id: int, tipo: str = Form(...), presentacion: str = Form(...),
                           lote: str = Form(...), estiba_n: str = Form(...), cantidad: int = Form(...),
-                          cuarto: str = Form(...), lado: str = Form(...), rack: str = Form(...),
-                          nivel: str = Form(...), posicion: str = Form(...),
-                          detalles: Optional[str] = Form(None),
+                          cuarto: str = Form(...), lado: str = Form(...), rack: str = Form(...), nivel: str = Form(...),
+                          posicion: str = Form(...),detalles: Optional[str] = Form(None),
                           db: Session = Depends(get_db)):
 
     registro_editado = db.query(Inventario).filter(Inventario.id == registro_id).first()
@@ -120,7 +106,6 @@ async def editar_registro(request: Request, registro_id: int, tipo: str = Form(.
     return RedirectResponse(url="/registros", status_code=status.HTTP_302_FOUND)
 
 
-
 @router.post("/complete/{registro_id", response_class=HTMLResponse)
 async def complete(request: Request, registro_id: int, db: Session = Depends(get_db)):
     registro = db.query(Inventario).filter(Inventario.id == registro_id).first()
@@ -129,16 +114,19 @@ async def complete(request: Request, registro_id: int, db: Session = Depends(get
     db.commit()
 
 
+# ELiminar registro
 @router.delete("/eliminar-registro/{registro_id}", response_class=HTMLResponse)
 async def eliminar_registro(request: Request, registro_id: int, db: Session = Depends(get_db)):
-    registro = db.query(Inventario).filter(Inventario.id == registro_id).first()
-    if not registro:
+    registro_eliminar = db.query(Inventario).filter(Inventario.id == registro_id).first()
+    if not registro_eliminar:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Registro no encontrado")
 
-    db.delete(registro)
+    db.delete(registro_eliminar)
     db.commit()
 
-    return RedirectResponse(url="/registros", status_code=status.HTTP_302_FOUND)
+    return RedirectResponse("/registros", status_code=status.HTTP_302_FOUND)
+
+
 
 
 

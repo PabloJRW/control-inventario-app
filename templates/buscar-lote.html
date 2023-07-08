@@ -19,14 +19,7 @@
         <h1 class="text-center mt-3 text-secondary">GESTOR DE ALMACENAMIENTO</h1>
         <nav class="navbar navbar-light" style="background-color:#E5E7E9">
             <div class="d-flex mt-1 mb-1">
-                <a onclick="window.location.href='/registros'" class="btn btn-light btn-md ms-5">Registros</a>
-                <a onclick="window.location.href='crear-registro'" class="btn btn-light btn-md ms-3">Agregar Registro</a>
-            </div>
-            <div>
-                <form class="d-flex me-5">
-                    <input class="form-control me-2" type="search" placeholder="Buscar Lote" aria-label="Search" value="">
-                    <button onclick="window.location.href='/registros/buscar-lote'" class="btn btn-outline-success" type="submit">Buscar</button>
-                </form>
+                <a onclick="window.location.href='/registros'" class="btn btn-light btn-md ms-5">Regresar</a>
             </div>
         </nav>
     </div>
@@ -55,7 +48,7 @@
                 </thead>
 
                 <tbody>
-                    {% for registro in registros %}
+                    {% for registro in batch_data %}
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ registro.tipo }}</td>
