@@ -9,20 +9,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>HOME - Registros</title>
+    <title>HOME - Lote</title>
 
 </head>
 <body>
-
-    <!-- Header & Nav -->
-    <div>
-        <h1 class="text-center mt-3 text-secondary">GESTOR DE ALMACENAMIENTO</h1>
-        <nav class="navbar navbar-light" style="background-color:#E5E7E9">
-            <div class="d-flex mt-1 mb-1">
-                <a onclick="window.location.href='/registros'" class="btn btn-light btn-md ms-5">Regresar</a>
-            </div>
-        </nav>
-    </div>
 
         <!-- Tabla -->
     <div class="container mt-5">
@@ -48,7 +38,7 @@
                 </thead>
 
                 <tbody>
-                    {% for registro in batch_data %}
+                    {% for registro in registros %}
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ registro.tipo }}</td>

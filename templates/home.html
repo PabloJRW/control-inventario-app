@@ -23,9 +23,9 @@
                 <a onclick="window.location.href='crear-registro'" class="btn btn-light btn-md ms-3">Agregar Registro</a>
             </div>
             <div>
-                <form class="d-flex me-5">
-                    <input class="form-control me-2" type="search" placeholder="Buscar Lote" aria-label="Search" value="">
-                    <button onclick="window.location.href='/registros/buscar-lote'" class="btn btn-outline-success" type="submit">Buscar</button>
+                <form method="get" action="/registros/buscar-lote/{{lote}}" class="d-flex me-5">
+                    <input name="lote" class="form-control me-2" type="text" placeholder="Buscar Lote" aria-label="Search" value="">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
                 </form>
             </div>
         </nav>
@@ -41,6 +41,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">id</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">Presentación</th>
                         <th scope="col">Lote</th>
@@ -51,11 +52,13 @@
                         <th scope="col">Rack</th>
                         <th scope="col">Nivel</th>
                         <th scope="col">Posición</th>
+                        <th scope="col">Existencia</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for registro in registros %}
+                    {% if registro.existente == False %}
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ registro.tipo }}</td>
@@ -69,12 +72,39 @@
                         <td>{{ registro.nivel }}</td>
                         <td>{{ registro.posicion }}</td>
                         <td>
-                            <button onclick="window.location.href='/complete/{registro_id}'" type="button" class="btn btn-success">Complete</button>
+                            <form method="post" action="/registros/existencia/{{ registro.id }}">
+                                  <button type="submit" class="btn btn-success">Disponible</button>
+                            </form>
                         </td>
                         <td>
                             <button onclick="window.location.href='editar-registro/{{ registro.id }}'" type="button" class="btn btn-info">Editar</button>
                         </td>
                     </tr>
+
+
+                    {% else %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td class="strike-through-td">{{ registro.tipo }}</td>
+                        <td>{{ registro.presentacion }}</td>
+                        <td>{{ registro.lote }}</td>
+                        <td>{{ registro.estiba_n }}</td>
+                        <td>{{ registro.cantidad }}</td>
+                        <td>{{ registro.cuarto }}</td>
+                        <td>{{ registro.lado }}</td>
+                        <td>{{ registro.rack }}</td>
+                        <td>{{ registro.nivel }}</td>
+                        <td>{{ registro.posicion }}</td>
+                        <td>
+                            <form method="post" action="/registros/existencia/{{ registro.id }}">
+                                  <button type="submit" class="btn btn-danger">Despachado</button>
+                            </form>
+                        </td>
+                        <td>
+                            <button onclick="window.location.href='editar-registro/{{ registro.id }}'" type="button" class="btn btn-info">Editar</button>
+                        </td>
+                    </tr>
+                    {% endif %}
                     {% endfor %}
 
                 </tbody>
